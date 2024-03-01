@@ -108,7 +108,7 @@ venv() {
     python3 -m venv venv && . venv/bin/activate && python3 -m pip install --upgrade pip &> /dev/null
 }
 
-check_git() {
+check_uncommited_git() {
     local directory="${1:-.}"  # Use provided directory or default to current directory
     find "$directory" -name .git -type d -prune -execdir sh -c 'echo "Directory: $(pwd)"; git status --porcelain' \;
 }
@@ -116,6 +116,11 @@ check_git() {
 check_unpushed_git() {
     local directory="${1:-.}"  # Use provided directory or default to current directory
     find "$directory" -name .git -type d -prune -execdir sh -c 'echo "Directory: $(pwd)"; git log --branches --not --remotes --simplify-by-decoration --decorate --oneline' \;
+}
+
+check_unpulled_changes() {
+    local directory="${1:-.}"  # Use provided directory or default to current directory
+    find "$directory" -name .git -type d -prune -execdir sh -c 'echo "Directory: $(pwd)"; git fetch --all --prune && git log --branches --not --remotes --simplify-by-decoration --decorate --oneline' \;
 }
 
 # ----------------------------------
